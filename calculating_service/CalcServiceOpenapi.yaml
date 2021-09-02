@@ -1,0 +1,74 @@
+---
+openapi: 3.0.0
+info:
+  title: Calculation Service
+  version: 0.1.0
+paths:
+  "/api/{customer}":
+    parameters:
+      - name: customer
+        in: path
+        schema:
+          type: string
+        description: "Customer name"
+        required: true
+        
+      - name: from
+        in: query
+        schema:
+          type: "number"
+        description: "From date"
+        required: false
+        
+      - name: to
+        in: query
+        schema:
+          type: "number"
+        description: "To date"
+        required: false  
+    get:
+      summary: "Get customer calculations by name"
+      description: "Returns average and sum of values of customer by given time range (optionally)"
+      operationId: "getCustomerCalculations"
+      
+      responses:
+        "200":
+          description: Device Status
+          headers:
+            Access-Control-Allow-Headers:
+              schema:
+                type: string
+            Access-Control-Allow-Methods:
+              schema:
+                type: string
+            Access-Control-Allow-Origin:
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OperationResult"
+       
+        "404":
+          description: Resource not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProvideCorrectDate"
+                   
+components:
+  schemas:
+    ProvideCorrectDate:
+      type: object
+      properties:
+        error:
+          example: "Please provide correct timestamp data"
+          
+    OperationResult:
+      type: object
+      properties:
+        avg:
+          type: "number"
+        sum:
+          type: "number"
+    

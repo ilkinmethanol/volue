@@ -1,0 +1,115 @@
+---
+openapi: 3.0.2
+info:
+  title: API Service
+  version: 0.1.0
+paths:
+  "/health":
+    get:
+      summary: Health Check
+      description: "Getting status of service on database side"
+      operationId: health_check_health_get
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckOk'
+        '503':
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/HealthCheckError'
+                      
+  "/api":
+    post:
+      summary: Insert Customer Data
+      operationId: insert_customer_data_api_post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              title: Body
+              type: array
+              items:
+                "$ref": "#/components/schemas/CustomerData"
+        required: true
+      responses:
+        '200':
+          description: Successful Response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataStored'
+        '422':
+          description: Validation Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/HTTPValidationError"
+components:
+  schemas:
+    DataStored:
+      type: object
+      properties:
+        status:
+          example: "Customer data stored successfully"
+    HealthCheckOk:
+      type: object
+      properties:
+        status:
+          example: "Service is ready to accept requests"
+          
+    HealthCheckError:
+      type: object
+      properties:
+        status:
+          example: "Service is not ready"
+    CustomerData:
+      title: CustomerData
+      required:
+      - name
+      - t
+      - v
+      type: object
+      properties:
+        name:
+          title: Name
+          type: string
+        t:
+          title: T
+          type: integer
+        v:
+          title: V
+          type: number
+          
+    HTTPValidationError:
+      title: HTTPValidationError
+      type: object
+      properties:
+        detail:
+          title: Detail
+          type: array
+          items:
+            "$ref": "#/components/schemas/ValidationError"
+    ValidationError:
+      title: ValidationError
+      required:
+      - loc
+      - msg
+      - type
+      type: object
+      properties:
+        loc:
+          title: Location
+          type: array
+          items:
+            type: string
+        msg:
+          title: Message
+          type: string
+        type:
+          title: Error Type
+          type: string

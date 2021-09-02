@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: bash runapp.sh
+    volumes:
+      - .:/usr/src/app/
+    ports:
+      - 8006:8006
